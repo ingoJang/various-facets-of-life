@@ -290,6 +290,21 @@ const App: React.FC = () => {
                   <span>Reach 5/5 to complete a facet</span>
                 </li>
               </ul>
+              <div className="mb-4 text-center">
+                <p className="text-xs text-gray-400 font-normal leading-relaxed">
+                  Curious about the story?{' '}
+                  <a 
+                    href="https://www.behance.net/gallery/239924455/Various-Facet-of-Life" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-gray-500 hover:text-gray-700 underline underline-offset-2 transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    View the full project on Behance
+                  </a>
+                  .
+                </p>
+              </div>
               <p className="text-sm text-gray-500">Click anywhere to close</p>
            </div>
         </div>
