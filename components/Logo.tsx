@@ -1,4 +1,5 @@
 import React from 'react';
+import { getPublicPath } from '../utils/paths';
 
 /**
  * Top‑left logo used in the UI overlay.
@@ -7,7 +8,7 @@ import React from 'react';
  * folder (for example `/public/images/logo.png`) and update `LOGO_SRC`
  * below if needed.
  */
-const LOGO_SRC = '/images/logo.png'; // expects `public/images/logo.png`
+const LOGO_SRC = getPublicPath('/images/logo.png'); // expects `public/images/logo.png`
 
 export const Logo: React.FC = () => {
   return (

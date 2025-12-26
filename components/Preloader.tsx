@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { getPublicPath } from '../utils/paths';
 
 interface PreloaderProps {
   onComplete: () => void;
@@ -28,11 +29,11 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
 
     bgImage.onload = checkComplete;
     bgImage.onerror = checkComplete; // Continue even if image fails
-    bgImage.src = '/images/preloadBG.jpg';
+    bgImage.src = getPublicPath('/images/preloadBG.jpg');
 
     logoImage.onload = checkComplete;
     logoImage.onerror = checkComplete; // Continue even if image fails
-    logoImage.src = '/images/preloadLOGO.png';
+    logoImage.src = getPublicPath('/images/preloadLOGO.png');
 
     // Failsafe timeout (4 seconds)
     timeoutRef.current = setTimeout(() => {
@@ -100,7 +101,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
       <div className="preloader-content">
         <div className={`preloader-logo ${phase === 'stamp' ? 'logo-stamp' : ''} ${phase === 'hold' || phase === 'fadeout' ? 'logo-hold' : ''}`}>
           <img 
-            src="/images/preloadLOGO.png" 
+            src={getPublicPath("/images/preloadLOGO.png")} 
             alt="Loading" 
             className="preloader-logo-img"
           />

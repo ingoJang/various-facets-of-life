@@ -1,6 +1,9 @@
 import Phaser from 'phaser';
 import { Category } from '../../types';
 
+// Get base URL for GitHub Pages compatibility
+const BASE_URL = import.meta.env.BASE_URL;
+
 export class Boot extends Phaser.Scene {
   constructor() {
     super('Boot');
@@ -9,7 +12,7 @@ export class Boot extends Phaser.Scene {
   preload() {
     // Load external player image from `public/images/character.png`.
     // Vite serves files placed in `public/` at the site root, so the path is `/images/character.png`.
-    this.load.image('player', '/images/character.png');
+    this.load.image('player', `${BASE_URL}images/character.png`);
 
     // 2. Object Sprites (Apples, Bags, etc. from mock)
     // We create a distinct texture for each category
@@ -24,12 +27,12 @@ export class Boot extends Phaser.Scene {
 
     // Load specific category images from public/ if present and use them as textures
     // Vite serves files from `public/` at the root, so the path is `/images/<name>.png`.
-    this.load.image(`item-${Category.Friendship}`, '/images/friendship.png');
-    this.load.image(`item-${Category.Love}`, '/images/love.png');
-    this.load.image(`item-${Category.Passion}`, '/images/passion.png');
-    this.load.image(`item-${Category.Freedom}`, '/images/freedom.png');
-    this.load.image(`item-${Category.Ambition}`, '/images/ambition.png');
-    this.load.image(`item-${Category.Identity}`, '/images/identity.png');
+    this.load.image(`item-${Category.Friendship}`, `${BASE_URL}images/friendship.png`);
+    this.load.image(`item-${Category.Love}`, `${BASE_URL}images/love.png`);
+    this.load.image(`item-${Category.Passion}`, `${BASE_URL}images/passion.png`);
+    this.load.image(`item-${Category.Freedom}`, `${BASE_URL}images/freedom.png`);
+    this.load.image(`item-${Category.Ambition}`, `${BASE_URL}images/ambition.png`);
+    this.load.image(`item-${Category.Identity}`, `${BASE_URL}images/identity.png`);
 
     Object.entries(colors).forEach(([cat, color]) => {
       // If we loaded an external image for these categories, skip procedural generation
@@ -54,10 +57,10 @@ export class Boot extends Phaser.Scene {
     // Load background music
     // Place your MP3 file in public/audio/ folder and name it 'bgm.mp3'
     // The path will be /audio/bgm.mp3
-    this.load.audio('bgm', '/audio/bgm.mp3');
+    this.load.audio('bgm', `${BASE_URL}audio/bgm.mp3`);
     
     // Load sound effect for object pickup
-    this.load.audio('sfx', '/audio/sfx.wav');
+    this.load.audio('sfx', `${BASE_URL}audio/sfx.wav`);
     
     // Add error handling for audio loading
     this.load.on('filecomplete-audio-bgm', () => {

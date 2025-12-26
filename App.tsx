@@ -7,6 +7,7 @@ import { Logo } from './components/Logo';
 import { LifeBalance } from './components/LifeBalance';
 import { Preloader } from './components/Preloader';
 import { BACKGROUND_IMAGE_URL } from './constants';
+import { getPublicPath } from './utils/paths';
 import './components/Preloader.css';
 
 // Shared modal container styles for consistent UI (used by Pause, How to Play, and Facet Unlocked modals)
@@ -191,7 +192,7 @@ const App: React.FC = () => {
           className="absolute bottom-8 left-8 w-24 h-16 pointer-events-auto hover:scale-105 transition-transform flex items-center justify-center filter drop-shadow-lg"
           style={{
             // Use provided asset as the button background
-            backgroundImage: "url('/images/Asset 23.png')",
+            backgroundImage: `url('${getPublicPath("/images/Asset 23.png")}')`,
             backgroundSize: 'contain',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
@@ -206,7 +207,7 @@ const App: React.FC = () => {
           onClick={togglePause}
           className="absolute bottom-8 right-8 w-24 h-16 pointer-events-auto hover:scale-105 transition-transform flex items-center justify-center filter drop-shadow-lg"
           style={{
-            backgroundImage: "url('/images/Asset 23.png')",
+            backgroundImage: `url('${getPublicPath("/images/Asset 23.png")}')`,
             backgroundSize: 'contain',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
@@ -232,7 +233,7 @@ const App: React.FC = () => {
                 you unlocked… <span className="text-red-600 font-bold">{earnedCategory}</span>
               </h1>
               <img 
-                src={`/images/${earnedCategory.toLowerCase()}Modal.png`}
+                src={getPublicPath(`/images/${earnedCategory.toLowerCase()}Modal.png`)}
                 alt={earnedCategory}
                 className="mx-auto mb-6 w-auto h-auto max-w-[300px] object-contain"
               />
@@ -261,26 +262,26 @@ const App: React.FC = () => {
            <div className={MODAL_CONTAINER_CLASSES}>
               <button className={MODAL_CLOSE_BUTTON_CLASSES}>&times;</button>
               <img 
-                src="/images/howtoplay.png" 
+                src={getPublicPath("/images/howtoplay.png")} 
                 alt="How to Play" 
                 className="mx-auto mb-4 h-[30px] w-auto max-w-full object-contain"
                 style={{ height: '1.875rem' }}
               />
               <ul className="text-left text-lg space-y-2 mb-6 font-medium">
                 <li className="flex items-start gap-2">
-                  <img src="/images/star.png" alt="" className="mt-1.5 w-3 h-3 flex-shrink-0" />
+                  <img src={getPublicPath("/images/star.png")} alt="" className="mt-1.5 w-3 h-3 flex-shrink-0" />
                   <span>Move with A / D or ← →</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <img src="/images/star.png" alt="" className="mt-1.5 w-3 h-3 flex-shrink-0" />
+                  <img src={getPublicPath("/images/star.png")} alt="" className="mt-1.5 w-3 h-3 flex-shrink-0" />
                   <span>Catch what matters. Miss what doesn't</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <img src="/images/star.png" alt="" className="mt-1.5 w-3 h-3 flex-shrink-0" />
+                  <img src={getPublicPath("/images/star.png")} alt="" className="mt-1.5 w-3 h-3 flex-shrink-0" />
                   <span>Every catch has a trade-off</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <img src="/images/star.png" alt="" className="mt-1.5 w-3 h-3 flex-shrink-0" />
+                  <img src={getPublicPath("/images/star.png")} alt="" className="mt-1.5 w-3 h-3 flex-shrink-0" />
                   <span>Reach 5/5 to complete a facet</span>
                 </li>
               </ul>
@@ -294,7 +295,7 @@ const App: React.FC = () => {
         <div className={MODAL_OVERLAY_CLASSES}>
           <div className={`${MODAL_CONTAINER_CLASSES} w-80`}>
             <img 
-              src="/images/paused.png" 
+              src={getPublicPath("/images/paused.png")} 
               alt="PAUSED" 
               className="mx-auto mb-8 h-[36px] w-auto max-w-full object-contain"
               style={{ height: '2.25rem' }}

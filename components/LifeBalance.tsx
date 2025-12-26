@@ -1,5 +1,6 @@
 import React from 'react';
 import { Category, CATEGORY_ORDER, GameStats, MAX_SCORE } from '../types';
+import { getPublicPath } from '../utils/paths';
 
 // Import all label images from assets folder
 import loveTxt from '../assets/loveTxt.png';
@@ -60,7 +61,7 @@ export const LifeBalance: React.FC<Props> = ({ stats }) => {
   return (
     <div className="absolute top-4 right-4 md:top-8 md:right-8 w-[280px] md:w-[400px] select-none pointer-events-none scale-[0.7] md:scale-[0.8] origin-top-right">
       <div className="mb-4 flex justify-end">
-        <img src="/images/Asset 22.png" alt="Life Balance" style={{ width: 'auto', height: 'auto', maxWidth: 'none' }} />
+        <img src={getPublicPath("/images/Asset 22.png")} alt="Life Balance" style={{ width: 'auto', height: 'auto', maxWidth: 'none' }} />
       </div>
       
       <div className="flex flex-col gap-3">
