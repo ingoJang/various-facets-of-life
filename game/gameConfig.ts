@@ -12,6 +12,10 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
     height: 1080,
   },
   transparent: true, // Allow CSS background to show through
+  input: {
+    touch: true, // Enable touch input
+    activePointers: 1, // Allow single touch
+  },
   fps: {
     target: 60,
     forceSetTimeOut: false, // Use requestAnimationFrame for better performance

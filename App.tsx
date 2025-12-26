@@ -145,8 +145,13 @@ const App: React.FC = () => {
         #game-container {
           position: fixed;
           inset: 0;
+          touch-action: none; /* Prevent default touch behaviors like scrolling */
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          user-select: none;
         }
         #game-container canvas {
+          touch-action: none; /* Prevent default touch behaviors */
           display: block;
           border-radius: 0;
           color: rgba(255, 255, 255, 1);

@@ -32,6 +32,10 @@ export class MainGame extends Phaser.Scene {
   private fallingGroup!: Phaser.Physics.Arcade.Group;
   private spawnTimer!: Phaser.Time.TimerEvent;
   
+  // Touch/Mobile input
+  private pointerX: number = 0;
+  private isPointerDown: boolean = false;
+  
   private scores: Record<Category, number> = {
     [Category.Love]: 0,
     [Category.Passion]: 0,
@@ -96,6 +100,26 @@ export class MainGame extends Phaser.Scene {
         };
     }
 
+    // --- Touch/Mobile Input ---
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      this.isPointerDown = true;
+      this.pointerX = pointer.x;
+    });
+
+    this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+      if (this.isPointerDown) {
+        this.pointerX = pointer.x;
+      }
+    });
+
+    this.input.on('pointerup', () => {
+      this.isPointerDown = false;
+    });
+
+    this.input.on('pointercancel', () => {
+      this.isPointerDown = false;
+    });
+
     // --- Player ---
     this.player = this.physics.add.sprite(width / 2, height - 10, 'player');
     this.player.setOrigin(0.5, 1); // bottom-center origin so bottom of image is at the position
@@ -148,12 +172,33 @@ export class MainGame extends Phaser.Scene {
     if (this.isPaused) return;
 
     const speed = 600;
+    let moveLeft = false;
+    let moveRight = false;
 
-    // Movement
-    if (this.cursors.left.isDown || this.wasd.left.isDown) {
+    // Keyboard input
+    if (this.cursors?.left.isDown || this.wasd?.left.isDown) {
+      moveLeft = true;
+    } else if (this.cursors?.right.isDown || this.wasd?.right.isDown) {
+      moveRight = true;
+    }
+
+    // Touch/Mobile input - follow pointer position
+    if (this.isPointerDown) {
+      const playerCenterX = this.player.x;
+      const threshold = 20; // Dead zone to prevent jitter
+      
+      if (this.pointerX < playerCenterX - threshold) {
+        moveLeft = true;
+      } else if (this.pointerX > playerCenterX + threshold) {
+        moveRight = true;
+      }
+    }
+
+    // Apply movement
+    if (moveLeft) {
       this.player.setVelocityX(-speed);
       this.player.setFlipX(true); // Flip to face left
-    } else if (this.cursors.right.isDown || this.wasd.right.isDown) {
+    } else if (moveRight) {
       this.player.setVelocityX(speed);
       this.player.setFlipX(false); // Default faces right
     } else {
