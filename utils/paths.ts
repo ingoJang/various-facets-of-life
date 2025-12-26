@@ -18,3 +18,4 @@ export const getPublicPath = (path: string): string => {
   return `${base}${base.endsWith('/') ? '' : '/'}${cleanPath}`;
 };
 
+

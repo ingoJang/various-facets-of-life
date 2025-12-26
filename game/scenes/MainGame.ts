@@ -89,6 +89,17 @@ export class MainGame extends Phaser.Scene {
   create() {
     const { width, height } = this.scale;
 
+    // Check if audio was already unlocked from preloader
+    if ((window as any).__audioUnlocked) {
+      this.audioUnlocked = true;
+      // Try to start BGM immediately if already unlocked
+      this.time.delayedCall(100, () => {
+        if (!this.bgmPlaying) {
+          this.startBGM();
+        }
+      });
+    }
+
     // Set physics world bounds to match game area exactly (no padding)
     this.physics.world.setBounds(0, 0, width, height);
 
@@ -107,8 +118,16 @@ export class MainGame extends Phaser.Scene {
       this.pointerX = pointer.x;
       
       // Unlock audio on first touch/click (mobile browsers require user interaction)
+      // Check if already unlocked from preloader
+      if ((window as any).__audioUnlocked) {
+        this.audioUnlocked = true;
+      }
+      
       if (!this.audioUnlocked) {
         this.unlockAudio();
+      } else if (!this.bgmPlaying) {
+        // If already unlocked but BGM not playing, start it immediately
+        this.startBGM();
       }
     });
 
@@ -236,7 +255,13 @@ export class MainGame extends Phaser.Scene {
   // --- Procedural Audio Helpers ---
 
   private unlockAudio() {
-    if (this.audioUnlocked) return;
+    if (this.audioUnlocked) {
+      // If already unlocked, just start BGM if not playing
+      if (!this.bgmPlaying) {
+        this.startBGM();
+      }
+      return;
+    }
     
     const sound = this.sound as Phaser.Sound.WebAudioSoundManager;
     if (!sound.context) {
@@ -250,14 +275,16 @@ export class MainGame extends Phaser.Scene {
       sound.context.resume().then(() => {
         console.log('[MainGame] Audio context resumed successfully');
         this.audioUnlocked = true;
-        // Start BGM after unlocking
+        (window as any).__audioUnlocked = true;
+        // Start BGM immediately after unlocking
         this.startBGM();
       }).catch((error) => {
         console.error('[MainGame] Failed to resume audio context:', error);
       });
     } else {
       this.audioUnlocked = true;
-      // Start BGM if context is already active
+      (window as any).__audioUnlocked = true;
+      // Start BGM immediately if context is already active
       this.startBGM();
     }
   }

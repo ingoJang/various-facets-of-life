@@ -79,21 +79,58 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
     }
   }, [imagesLoaded, phase, onComplete, prefersReducedMotion]);
 
-  // Disable scrolling and pointer events while preloader is visible
+  // Disable scrolling while preloader is visible, but allow pointer events for audio unlock
   useEffect(() => {
     if (phase !== 'complete') {
       document.body.style.overflow = 'hidden';
-      document.body.style.pointerEvents = 'none';
     } else {
       document.body.style.overflow = '';
-      document.body.style.pointerEvents = '';
     }
 
     return () => {
       document.body.style.overflow = '';
-      document.body.style.pointerEvents = '';
     };
   }, [phase]);
+
+  // Unlock audio on preloader tap (mobile browsers require user interaction)
+  useEffect(() => {
+    const handlePreloaderTap = () => {
+      // Try to unlock audio context early
+      const unlockAudio = () => {
+        // Create a temporary audio context to unlock
+        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioContext) {
+          const ctx = new AudioContext();
+          if (ctx.state === 'suspended') {
+            ctx.resume().then(() => {
+              console.log('[Preloader] Audio context unlocked');
+              // Store in a way the game can access
+              (window as any).__audioUnlocked = true;
+            }).catch((err) => {
+              console.error('[Preloader] Failed to unlock audio:', err);
+            });
+          } else {
+            (window as any).__audioUnlocked = true;
+          }
+        }
+      };
+      unlockAudio();
+    };
+
+    // Allow tapping anywhere on preloader to unlock audio
+    const preloaderElement = document.querySelector('.preloader');
+    if (preloaderElement) {
+      preloaderElement.addEventListener('touchstart', handlePreloaderTap, { once: true });
+      preloaderElement.addEventListener('click', handlePreloaderTap, { once: true });
+    }
+
+    return () => {
+      if (preloaderElement) {
+        preloaderElement.removeEventListener('touchstart', handlePreloaderTap);
+        preloaderElement.removeEventListener('click', handlePreloaderTap);
+      }
+    };
+  }, []);
 
   return (
     <div className={`preloader ${phase === 'fadeout' || phase === 'complete' ? 'preloader-fadeout' : ''}`}>
