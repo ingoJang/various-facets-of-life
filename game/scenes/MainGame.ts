@@ -35,6 +35,7 @@ export class MainGame extends Phaser.Scene {
   // Touch/Mobile input
   private pointerX: number = 0;
   private isPointerDown: boolean = false;
+  private audioUnlocked: boolean = false;
   
   private scores: Record<Category, number> = {
     [Category.Love]: 0,
@@ -104,6 +105,11 @@ export class MainGame extends Phaser.Scene {
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
       this.isPointerDown = true;
       this.pointerX = pointer.x;
+      
+      // Unlock audio on first touch/click (mobile browsers require user interaction)
+      if (!this.audioUnlocked) {
+        this.unlockAudio();
+      }
     });
 
     this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
@@ -156,12 +162,11 @@ export class MainGame extends Phaser.Scene {
     EventBus.on(EVENTS.RESTART_GAME, this.resetGame, this);
     EventBus.on(EVENTS.TOGGLE_AUDIO, this.handleAudioToggle, this);
 
-    // Unlock audio on first click
-    this.input.on('pointerdown', () => {
-      this.startBGM();
-    });
+    // Unlock audio on keyboard input (desktop)
     this.input.keyboard?.on('keydown', () => {
-      this.startBGM();
+      if (!this.audioUnlocked) {
+        this.unlockAudio();
+      }
     });
 
     // Initial Score Emit
@@ -230,6 +235,33 @@ export class MainGame extends Phaser.Scene {
 
   // --- Procedural Audio Helpers ---
 
+  private unlockAudio() {
+    if (this.audioUnlocked) return;
+    
+    const sound = this.sound as Phaser.Sound.WebAudioSoundManager;
+    if (!sound.context) {
+      console.warn('[MainGame] Sound context not available for unlock');
+      return;
+    }
+    
+    // Resume context if suspended (browser autoplay policy)
+    if (sound.context.state === 'suspended') {
+      console.log('[MainGame] Unlocking audio context on user interaction');
+      sound.context.resume().then(() => {
+        console.log('[MainGame] Audio context resumed successfully');
+        this.audioUnlocked = true;
+        // Start BGM after unlocking
+        this.startBGM();
+      }).catch((error) => {
+        console.error('[MainGame] Failed to resume audio context:', error);
+      });
+    } else {
+      this.audioUnlocked = true;
+      // Start BGM if context is already active
+      this.startBGM();
+    }
+  }
+
   private startBGM() {
     if (this.bgmPlaying) {
       console.log('[MainGame] BGM already playing');
@@ -252,12 +284,21 @@ export class MainGame extends Phaser.Scene {
       return;
     }
     
-    // Resume context if suspended (browser autoplay policy)
+    // Ensure context is resumed (browser autoplay policy)
     if (sound.context.state === 'suspended') {
-      console.log('[MainGame] Resuming suspended audio context');
-      sound.context.resume();
+      console.log('[MainGame] Audio context suspended, attempting to resume');
+      sound.context.resume().then(() => {
+        this.playBGM();
+      }).catch((error) => {
+        console.error('[MainGame] Failed to resume audio context:', error);
+      });
+      return;
     }
 
+    this.playBGM();
+  }
+
+  private playBGM() {
     try {
       // Play the loaded MP3 file
       // Set volume to 0 if audio is disabled, otherwise use normal volume
@@ -291,7 +332,15 @@ export class MainGame extends Phaser.Scene {
     if (!this.audioEnabled) return;
     
     const sound = this.sound as Phaser.Sound.WebAudioSoundManager;
-    if (!sound.context || sound.context.state === 'suspended') return;
+    if (!sound.context) return;
+    
+    // Resume context if suspended (shouldn't happen after unlock, but just in case)
+    if (sound.context.state === 'suspended') {
+      sound.context.resume().catch((error) => {
+        console.error('[MainGame] Failed to resume audio context for SFX:', error);
+      });
+      return; // Skip this SFX, will work on next attempt
+    }
     
     if (type === 'pickup') {
       // Stop any existing SFX playback to prevent overlap
