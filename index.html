@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Various Facets of Life</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Roboto:wght@400;700;900&display=swap');
+      
+      body {
+        margin: 0;
+        overflow: hidden;
+        background-color: #000;
+        font-family: 'Roboto', sans-serif;
+      }
+      
+      /* Cloud Button Shape approximation */
+      .cloud-btn {
+        background: white;
+        border-radius: 50%;
+        box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+        position: relative;
+      }
+      .cloud-btn::before, .cloud-btn::after {
+        content: '';
+        position: absolute;
+        background: white;
+        border-radius: 50%;
+      }
+      
+      /* Custom font for the logo fallback */
+      .font-logo {
+        font-family: 'Fredoka One', cursive;
+      }
+
+      /* Pixelated look for game canvas if needed, though mock looks high-res cutout style */
+      canvas {
+        display: block;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "phaser": "https://esm.sh/phaser@^3.90.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
